@@ -69,6 +69,36 @@ body {
     margin-top: 4px;
 }
 
+/* Timer Styles */
+.timer-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(34, 197, 94, 0.3);
+    border-radius: 15px;
+    padding: 15px 25px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.timer-label {
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.timer-display {
+    color: #22c55e;
+    font-size: 32px;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
 /* Status Indicator */
 .status-indicator {
     display: inline-block;
@@ -150,11 +180,6 @@ body {
 }
 
 /* URL Copy Button */
-.url-container {
-    position: relative;
-    display: inline-block;
-}
-
 .copy-btn {
     background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.3);
@@ -212,11 +237,27 @@ body {
 @media (max-width: 768px) {
     .metric-number { font-size: 24px; }
     .metric-label { font-size: 11px; }
+    
+    .timer-container {
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+    }
+    
+    .timer-display {
+        font-size: 24px;
+    }
 }
 </style>
 </head>
 
 <body>
+
+<!-- TIMER (FIXED POSITION - TOP RIGHT) -->
+<div class="timer-container">
+    <div class="timer-label">Presentation Time</div>
+    <div class="timer-display" id="timer">00:00</div>
+</div>
 
 <main class="max-w-6xl mx-auto px-6 pt-24 pb-32 space-y-24">
 
@@ -578,7 +619,29 @@ body {
 
 <!-- JavaScript -->
 <script>
-// Test Health API
+// ============================================================================
+// TIMER FUNCTIONALITY
+// ============================================================================
+let startTime = Date.now();
+
+function updateTimer() {
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    
+    const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    document.getElementById('timer').textContent = display;
+}
+
+// Update timer every second
+setInterval(updateTimer, 1000);
+updateTimer(); // Initial call
+
+// ============================================================================
+// TEST HEALTH API
+// ============================================================================
 async function testHealthAPI() {
     const responseBox = document.getElementById('apiResponse');
     responseBox.className = 'api-response show';
@@ -605,7 +668,9 @@ async function testHealthAPI() {
     }
 }
 
-// Copy URL
+// ============================================================================
+// COPY URL
+// ============================================================================
 function copyURL() {
     const url = 'https://pbl-predictivevehiclediagnostics.onrender.com';
     const btn = document.getElementById('copyBtn');
@@ -623,7 +688,9 @@ function copyURL() {
     });
 }
 
-// Smooth scroll
+// ============================================================================
+// SMOOTH SCROLL
+// ============================================================================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
