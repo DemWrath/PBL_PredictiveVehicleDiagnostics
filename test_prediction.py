@@ -1,7 +1,7 @@
 import requests
 import json
 
-API_URL = "http://127.0.0.1:5000"
+API_URL = "https://pbl-predictivevehiclediagnostics.onrender.com"
 
 print("="*70)
 print("VEHICLE FAULT DETECTION - PREDICTION TEST")
@@ -140,5 +140,5 @@ print("\n" + "="*70)
 print("TESTING COMPLETE")
 print("="*70)
 print("\n✓ Your fault detection system is working!")
-print("  API URL: http://127.0.0.1:5000")
-print("  Network URL: http://10.173.2.144:5000")
+print("  API URL: https://pbl-predictivevehiclediagnostics.onrender.com")
+print("  Network URL: https://pbl-predictivevehiclediagnostics.onrender.com")
