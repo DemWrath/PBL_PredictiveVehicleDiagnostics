@@ -1,44 +1,81 @@
-Here is your **properly formatted README-style documentation**, clean and professional:
+# Predictive Vehicle Diagnostics
+
+Production-deployed deep learning–based vehicle fault detection system using an LSTM model with a custom Attention mechanism.
+
+**Live Endpoint:**
+[https://pbl-predictivevehiclediagnostics.onrender.com](https://pbl-predictivevehiclediagnostics.onrender.com)
 
 ---
 
-# 🚗 Vehicle Fault Detection API
+## Project Overview
 
-## 📌 Project Overview
+This project provides a RESTful API for real-time vehicle fault detection using multivariate time-series sensor data.
 
-This project provides a **RESTful API** for real-time vehicle fault detection using a trained **LSTM neural network with a custom Attention mechanism**.
+Pipeline:
 
-The system:
+1. Accepts 1200-timestep sequences from 10 vehicle sensors
+2. Performs validation and normalization
+3. Runs inference using an LSTM + Attention model
+4. Applies optimized decision thresholding
+5. Returns structured diagnostic output
 
-* Processes time-series sensor data
-* Performs normalization
-* Runs inference using a deep learning model
-* Applies an optimized decision threshold
-* Generates structured diagnostic results in JSON format
-
----
-
-## 🧠 Model Information
-
-* **Model File:** `classifier.h5`
-* **Architecture:** LSTM with Custom Attention Layer
-* **Input Shape:** `(1200 timesteps, 10 sensors)`
-* **Decision Threshold:** `0.52`
-* **Output:** Fault probability score
+The system is deployed in a constrained 512MB cloud environment with optimized Gunicorn configuration.
 
 ---
 
-## 🛠 Technology Stack
+## System Architecture
+
+```
+Sensor Data
+   ↓
+Validation Layer
+   ↓
+Normalization
+   ↓
+LSTM + Attention Model
+   ↓
+Thresholding
+   ↓
+Diagnostic Engine
+   ↓
+JSON Response
+```
+
+Design considerations:
+
+* Single-worker Gunicorn configuration to prevent TensorFlow memory duplication
+* CPU-based TensorFlow build for efficient cloud deployment
+* Deterministic threshold-based decision layer
+* Modular diagnostic engine abstraction
+
+---
+
+## Model Details
+
+| Property           | Value                        |
+| ------------------ | ---------------------------- |
+| Architecture       | LSTM with Custom Attention   |
+| Input Shape        | (1200 timesteps, 10 sensors) |
+| Output             | Fault probability score      |
+| Decision Threshold | 0.52                         |
+| Model File         | `classifier.h5`              |
+
+The attention layer enhances temporal feature weighting across long sensor sequences.
+
+---
+
+## Technology Stack
 
 * Python 3.x
 * Flask
 * TensorFlow / Keras
 * NumPy
-* Gunicorn (Production Server)
+* Gunicorn
+* Render (cloud hosting)
 
 ---
 
-## 📂 Project Structure
+## Repository Structure
 
 ```
 .
@@ -54,21 +91,21 @@ The system:
 
 ---
 
-## ▶ Running the Application Locally
+## Running Locally
 
-### 1️⃣ Install Dependencies
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Start the Server
+### Start server
 
 ```bash
 python deploy_cloud_api.py
 ```
 
-The API will be available at:
+Server runs at:
 
 ```
 http://localhost:5000
@@ -76,27 +113,25 @@ http://localhost:5000
 
 ---
 
-## 🚀 Production Deployment
+## Production Deployment
 
-The application is configured to run using **Gunicorn**.
-
-Start command:
+The application runs using Gunicorn:
 
 ```bash
-gunicorn deploy_cloud_api:app
+gunicorn deploy_cloud_api:app --workers 1 --threads 2 --timeout 120
 ```
 
----
-
-# 📡 API Endpoints
+Single-worker configuration is required to maintain stability within a 512MB environment due to TensorFlow memory usage.
 
 ---
 
-## 1️⃣ Health Check
+## API Endpoints
 
-### **GET** `/health`
+### Health Check
 
-### ✅ Response
+**GET** `/health`
+
+Response:
 
 ```json
 {
@@ -108,11 +143,11 @@ gunicorn deploy_cloud_api:app
 
 ---
 
-## 2️⃣ Single Prediction
+### Single Prediction
 
-### **POST** `/predict`
+**POST** `/predict`
 
-### 📥 Request Body
+Request:
 
 ```json
 {
@@ -133,7 +168,7 @@ gunicorn deploy_cloud_api:app
 }
 ```
 
-### 📤 Response
+Response:
 
 ```json
 {
@@ -149,29 +184,11 @@ gunicorn deploy_cloud_api:app
 
 ---
 
-## 3️⃣ Batch Prediction
+### Batch Prediction
 
-### **POST** `/batch_predict`
+**POST** `/batch_predict`
 
-### 📥 Request Body
-
-```json
-{
-  "vehicle_id": "VIN123456789",
-  "sequences": [
-    {
-      "timestamp": "...",
-      "sensor_data": { ... }
-    },
-    {
-      "timestamp": "...",
-      "sensor_data": { ... }
-    }
-  ]
-}
-```
-
-### 📤 Response
+Response format:
 
 ```json
 {
@@ -190,37 +207,23 @@ gunicorn deploy_cloud_api:app
 
 ---
 
-## 📏 Input Requirements
+## Input Requirements
 
-* Each sensor must contain **exactly 1200 readings**
-* Exactly **10 sensor streams** are required
-* Values are **normalized internally before inference**
+* Exactly 10 sensor streams
+* Exactly 1200 readings per sensor
+* Internal normalization applied before inference
 
----
-
-## ⚠ Error Handling
-
-* Missing sensor data → **HTTP 400**
-* Incorrect sequence length → **HTTP 400**
-* Internal processing errors → **HTTP 500**
+Validation errors return HTTP 400.
+Unexpected internal failures return HTTP 500.
 
 ---
 
-## 🎓 Usage Context
+## Production Characteristics
 
-This project is developed for **academic purposes** as part of a predictive maintenance system for vehicle diagnostics.
+* Publicly deployed inference API
+* Memory-optimized configuration
+* Deterministic thresholding
+* Modular diagnostic abstraction layer
+* Designed for scalability under higher-resource environments
 
 ---
-
-# 📁 PBL_PredictiveVehicleDiagnostics
-
----
-
-If you'd like, I can now:
-
-* Improve this to **industry-grade production documentation**
-* Add **API testing examples (Postman / curl)**
-* Add a **system architecture diagram**
-* Or format it for a **GitHub professional portfolio showcase**
-
-Just tell me what level you want this polished to 🚀
