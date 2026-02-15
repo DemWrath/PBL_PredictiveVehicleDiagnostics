@@ -58,4 +58,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:5000/health', timeout=5)" || exit 1
 
 # Run with Gunicorn (production server)
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "--worker-class", "sync", "--access-logfile", "-", "--error-logfile", "-", "deploy_cloud_api:app"]
+CMD gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 deploy_cloud_api:app
